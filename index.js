@@ -15,13 +15,28 @@ app.use(express.static('public'));
 
 // http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (req, res) {
+  
   res.sendFile(__dirname + '/views/index.html');
 });
 
 
 // your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
+app.get("/api/:date?", function (req, res) {
+  const dateParam = req.params.date;
+  let date;
+  if(!dateParam){
+    date = new Date();
+  }
+  else if ( !isNaN(dateParam) ){
+    date = new Date(parseInt(dateParam))
+  }
+  else  {
+  date = new Date(dateParam)
+}
+  if (date.toString() === "Invalid Date"){
+    res.json({error: "Invalid Date"})
+  }
+  res.json({unix: date.getTime(), utc: date.toUTCString()})
 });
 
 
